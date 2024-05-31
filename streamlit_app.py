@@ -7,7 +7,8 @@ from transformers import pipeline
 from deep_translator import GoogleTranslator, exceptions
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
-nltk.download('vader_lexicon')
+nltk.download('vader_lexicon', quiet=True)
+
 
 def load_data(dataset_name):
     # Load dataset
@@ -57,9 +58,6 @@ import streamlit as st
 from deep_translator import GoogleTranslator, exceptions
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
-
-# Ensure the VADER lexicon is downloaded
-nltk.download('vader_lexicon')
 
 def translate_to_english(text):
     try:
