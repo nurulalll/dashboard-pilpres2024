@@ -38,7 +38,7 @@ def display_wordcloud(df):
     plt.figure(figsize=(12, 15))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
-    st.pyplot(plt, clear_figure=False)
+    st.pyplot(plt, use_container_width=True)
 
 def display_sentiment_distribution(df):
     sentiment_counts = df['sentimen'].value_counts()
