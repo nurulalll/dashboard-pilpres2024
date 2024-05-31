@@ -4,6 +4,8 @@ import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from transformers import pipeline
+from deep_translator import GoogleTranslator, exceptions
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def load_data(dataset_name):
     # Load dataset
@@ -49,21 +51,46 @@ def display_top_usernames(df):
     fig.update_layout(width=800, height=400, xaxis={'categoryorder':'total descending'})
     st.plotly_chart(fig, use_container_width=True)
 
-def text_sentiment():
-    st.title('Analisis Text Sentiment')
-    sentiment_analysis = pipeline("sentiment-analysis")
-    input_text = st.text_area("Masukkan kalimat yang ingin di  analisis:")
-    button = st.button("Analisis")
+import streamlit as st
+from deep_translator import GoogleTranslator, exceptions
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import nltk
 
-    if button:
-        with st.spinner("Sedang menganalisis..."):
-            result = sentiment_analysis(input_text)[0]
-        # Menentukan warna teks berdasarkan sentimen
-        sentiment_color = "green" if result['label'] == 'POSITIVE' else "red" if result['label'] == 'NEGATIVE' else "black"
-        # Menampilkan hasil analisis dengan gaya teks yang menarik
-        st.write(f"**Sentimen:** <span style='color:{sentiment_color}; font-weight:bold;'>{result['label']}</span>", 
-                 f"**Score:** {result['score']:.2f}", 
-                 unsafe_allow_html=True)
+# Ensure the VADER lexicon is downloaded
+nltk.download('vader_lexicon')
+
+def translate_to_english(text):
+    try:
+        translator = GoogleTranslator(source='auto', target='en')
+        translated_text = translator.translate(text)
+        return translated_text
+    except exceptions.TranslationNotFound:
+        return "Translation service unavailable."
+
+def sentiment_analysis(text):
+    # Translate teks ke bahasa Inggris
+    english_text = translate_to_english(text)
+    
+    if english_text == "Translation service unavailable.":
+        return {'label': 'ERROR', 'score': 0.0}
+
+    # Membuat instance dari SentimentIntensityAnalyzer
+    analyzer = SentimentIntensityAnalyzer()
+
+    # Melakukan analisis sentimen pada teks yang telah diterjemahkan
+    scores = analyzer.polarity_scores(english_text)
+    compound_score = scores['compound']
+
+    # Menentukan label sentimen berdasarkan nilai compound
+    if compound_score >= 0.05:
+        label = 'POSITIVE'
+    elif compound_score <= -0.05:
+        label = 'NEGATIVE'
+    else:
+        label = 'NEUTRAL'
+
+    return {'label': label, 'score': compound_score}
+
 
 def display_visualizations(df, visualization_options):
     st.title("Visualizations")
