@@ -43,7 +43,7 @@ def display_wordcloud(df):
 def display_sentiment_distribution(df):
     sentiment_counts = df['sentimen'].value_counts()
     fig = px.pie(sentiment_counts, values=sentiment_counts.values, names=sentiment_counts.index)
-    fig.update_layout(width=600, height=400)
+    fig.update_layout(width=600, height=300)
     st.plotly_chart(fig, use_container_width=True)
 
 def display_top_usernames(df):
