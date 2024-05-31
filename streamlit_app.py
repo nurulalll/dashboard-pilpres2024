@@ -34,7 +34,7 @@ def header():
 
 def display_wordcloud(df):
     tweet_text = ' '.join(df['Tweet'].astype(str).tolist())
-    wordcloud = WordCloud(width=800, height=550, background_color ='white').generate(tweet_text)
+    wordcloud = WordCloud(width=800, height=600, background_color ='white').generate(tweet_text)
     plt.figure(figsize=(12, 8))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
