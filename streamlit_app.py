@@ -4,6 +4,7 @@ import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from deep_translator import GoogleTranslator, exceptions
+from deep_translator.exceptions import TooManyRequests
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 nltk.download('vader_lexicon', quiet=True)
