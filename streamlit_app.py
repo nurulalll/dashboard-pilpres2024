@@ -8,7 +8,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 nltk.download('vader_lexicon', quiet=True)
 
-
 def load_data(dataset_name):
     # Load dataset
     df = pd.read_excel(dataset_name)
@@ -91,7 +90,23 @@ def sentiment_analysis(text):
         label = 'NEUTRAL'
 
     return {'label': label, 'score': compound_score}
-    
+
+def predict_from_dataset(df):
+    # Melakukan prediksi sentimen pada dataset
+    predictions = df['Tweet'].apply(lambda x: sentiment_analysis(x))
+    df['predicted_sentiment'] = predictions.apply(lambda x: x['label'])
+    return df
+
+def display_predictions(df):
+    st.subheader("Predictions")
+    st.write(df[['Tweet', 'predicted_sentiment']])
+
+def display_predictions_visualization(df):
+    sentiment_counts = df['predicted_sentiment'].value_counts()
+    fig = px.bar(sentiment_counts, x=sentiment_counts.index, y=sentiment_counts.values, labels={'x': 'Sentiment', 'y': 'Count'})
+    fig.update_layout(width=800, height=550)
+    st.plotly_chart(fig, use_container_width=True)
+
 def text_sentiment():
     st.title('Analisis Text Sentiment')
     input_text = st.text_area("Masukkan kalimat yang ingin di analisis:")
@@ -144,7 +159,7 @@ def main():
 
     selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
 
-    page = st.radio("Navigate", ["Visualizations", "Text Sentiment"])
+    page = st.radio("Navigate", ["Visualizations", "Text Sentiment", "Predictions"])
 
     dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
     df = pd.concat(dfs) if dfs else None
@@ -156,9 +171,15 @@ def main():
                 display_visualizations(df, visualization_options)
             else:
                 st.warning("Please select at least one visualization option.")
-
     elif page == 'Text Sentiment':
         text_sentiment()
+    elif page == 'Predictions':
+        if df is not None:
+            df = predict_from_dataset(df)
+            display_predictions(df)
+            display_predictions_visualization(df)
+        else:
+            st.warning("Please select at least one dataset.")
 
 if __name__ == "__main__":
     main()
