@@ -108,6 +108,19 @@ def text_sentiment():
                      f"**Score:** {result['score']:.2f}", 
                      unsafe_allow_html=True)
 
+def predict_from_dataset(df):
+    # Lakukan prediksi di sini
+    # Misalnya, kita hanya akan menggunakan kolom 'Tweet' untuk prediksi
+    # Anda harus mengganti bagian ini dengan model dan metode prediksi yang sesuai
+    predictions = df['Tweet'].apply(lambda x: sentiment_analysis(x))
+    return predictions
+
+def display_predictions(predictions):
+    st.subheader("Predictions")
+    sentiment_counts = predictions.apply(lambda x: x['label']).value_counts()
+    fig = px.pie(sentiment_counts, values=sentiment_counts.values, names=sentiment_counts.index, title='Sentiment Predictions Distribution')
+    st.plotly_chart(fig, use_container_width=True)
+
 def display_visualizations(df, visualization_options):
     st.title("Visualizations")
     num_options = len(visualization_options)
@@ -144,7 +157,7 @@ def main():
 
     selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
 
-    page = st.radio("Navigate", ["Visualizations", "Text Sentiment"])
+    page = st.radio("Navigate", ["Visualizations", "Text Sentiment", "Predictions"])
 
     dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
     df = pd.concat(dfs) if dfs else None
@@ -156,9 +169,14 @@ def main():
                 display_visualizations(df, visualization_options)
             else:
                 st.warning("Please select at least one visualization option.")
-
     elif page == 'Text Sentiment':
         text_sentiment()
+    elif page == 'Predictions':
+        if df is not None:
+            predictions = predict_from_dataset(df)
+            display_predictions(predictions)
+        else:
+            st.warning("Please select at least one dataset.")
 
 if __name__ == "__main__":
     main()
