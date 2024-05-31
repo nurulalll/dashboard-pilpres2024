@@ -34,7 +34,7 @@ def header():
 
 def display_wordcloud(df):
     tweet_text = ' '.join(df['Tweet'].astype(str).tolist())
-    wordcloud = WordCloud(width=800, height=600, background_color ='white').generate(tweet_text)
+    wordcloud = WordCloud(width=800, height=550, background_color ='white').generate(tweet_text)
     plt.figure(figsize=(12, 8))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
@@ -43,21 +43,21 @@ def display_wordcloud(df):
 def display_sentiment_distribution(df):
     sentiment_counts = df['sentimen'].value_counts()
     fig = px.pie(sentiment_counts, values=sentiment_counts.values, names=sentiment_counts.index)
-    fig.update_layout(width=600, height=300)
+    fig.update_layout(width=800, height=550, margin=dict(l=0, r=0, t=0, b=0))  # Reduce margins to bring the chart closer to content
     st.plotly_chart(fig, use_container_width=True)
 
 def display_top_usernames(df):
     top_usernames = df['username'].value_counts().head(10)
     fig = px.bar(top_usernames, x=top_usernames.index, y=top_usernames.values,
                  labels={'x':'Username', 'y':'Count'})
-    fig.update_layout(width=800, height=400, xaxis={'categoryorder':'total descending'})
+    fig.update_layout(width=800, height=550, xaxis={'categoryorder':'total descending'})
     st.plotly_chart(fig, use_container_width=True)
 
 def display_top_locations(df):
     top_locations = df['location'].value_counts().head(10)
     fig = px.bar(top_locations, y=top_locations.index, x=top_locations.values, orientation='h',
                  labels={'y':'Location', 'x':'Count'})
-    fig.update_layout(width=800, height=400, yaxis={'categoryorder':'total ascending'})
+    fig.update_layout(width=800, height=550, yaxis={'categoryorder':'total ascending'})
     st.plotly_chart(fig, use_container_width=True)
 
 def translate_to_english(text):
