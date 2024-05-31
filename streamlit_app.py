@@ -35,7 +35,7 @@ def header():
 def display_wordcloud(df):
     tweet_text = ' '.join(df['Tweet'].astype(str).tolist())
     wordcloud = WordCloud(width=800, height=550, background_color ='white').generate(tweet_text)
-    plt.figure(figsize=(12, 10))
+    plt.figure(figsize=(12, 12))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
     st.pyplot(plt, clear_figure=False)
@@ -43,7 +43,7 @@ def display_wordcloud(df):
 def display_sentiment_distribution(df):
     sentiment_counts = df['sentimen'].value_counts()
     fig = px.pie(sentiment_counts, values=sentiment_counts.values, names=sentiment_counts.index)
-    fig.update_layout(width=800, height=400)  # Reduce margins to bring the chart closer to content
+    fig.update_layout(width=800, height=300)  # Reduce margins to bring the chart closer to content
     st.plotly_chart(fig, use_container_width=True)
 
 def display_top_usernames(df):
