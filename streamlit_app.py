@@ -30,7 +30,7 @@ def header():
         unsafe_allow_html=True
     )
 
-    st.markdown('<div class="center"><h1>Prediksi Pilihan Presiden RI tahun 2024-2029</h1></div>', unsafe_allow_html=True)
+    st.markdown('<div class="center"><h1>Prediksi Pemilihan Presiden RI tahun 2024-2029</h1></div>', unsafe_allow_html=True)
     st.image('https://img.okezone.com/content/2018/02/19/337/1861446/sejarah-pemilu-dari-masa-ke-masa-cyx7Flt69A.jpg', width=400)
 
 def display_wordcloud(df):
