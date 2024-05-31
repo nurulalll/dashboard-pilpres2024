@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from transformers import pipeline
 from deep_translator import GoogleTranslator, exceptions
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import nltk
+nltk.download('vader_lexicon')
 
 def load_data(dataset_name):
     # Load dataset
