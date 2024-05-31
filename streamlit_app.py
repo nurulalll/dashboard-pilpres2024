@@ -3,10 +3,11 @@ import pandas as pd
 import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from deep_translator import GoogleTranslator, exceptions
+from deep_translator import GoogleTranslator
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 nltk.download('vader_lexicon', quiet=True)
+
 
 def load_data(dataset_name):
     # Load dataset
@@ -64,7 +65,7 @@ def translate_to_english(text):
         translator = GoogleTranslator(source='auto', target='en')
         translated_text = translator.translate(text)
         return translated_text
-    except exceptions.TranslationNotFound:
+    except Exception:
         return "Translation service unavailable."
 
 def sentiment_analysis(text):
@@ -90,23 +91,7 @@ def sentiment_analysis(text):
         label = 'NEUTRAL'
 
     return {'label': label, 'score': compound_score}
-
-def predict_from_dataset(df):
-    # Melakukan prediksi sentimen pada dataset
-    predictions = df['Tweet'].apply(lambda x: sentiment_analysis(x))
-    df['predicted_sentiment'] = predictions.apply(lambda x: x['sentimen'])
-    return df
-
-def display_predictions(df):
-    st.subheader("Predictions")
-    st.write(df[['Tweet', 'predicted_sentiment']])
-
-def display_predictions_visualization(df):
-    sentiment_counts = df['predicted_sentiment'].value_counts()
-    fig = px.bar(sentiment_counts, x=sentiment_counts.index, y=sentiment_counts.values, labels={'x': 'Sentiment', 'y': 'Count'})
-    fig.update_layout(width=800, height=550)
-    st.plotly_chart(fig, use_container_width=True)
-
+    
 def text_sentiment():
     st.title('Analisis Text Sentiment')
     input_text = st.text_area("Masukkan kalimat yang ingin di analisis:")
@@ -122,6 +107,19 @@ def text_sentiment():
             st.write(f"**Sentimen:** <span style='color:{sentiment_color}; font-weight:bold;'>{result['label']}</span>", 
                      f"**Score:** {result['score']:.2f}", 
                      unsafe_allow_html=True)
+
+def predict_from_dataset(df):
+    # Melakukan prediksi di sini
+    # Misalnya, kita hanya akan menggunakan kolom 'Tweet' untuk prediksi
+    predictions = df['Tweet'].apply(lambda x: sentiment_analysis(x))
+    df['predicted_sentiment'] = predictions.apply(lambda x: x['label'])
+    return df
+
+def display_predictions(df):
+    st.subheader("Predictions")
+    sentiment_counts = df['predicted_sentiment'].value_counts()
+    fig = px.pie(sentiment_counts, values=sentiment_counts.values, names=sentiment_counts.index, title='Predicted Sentiment Distribution')
+    st.plotly_chart(fig, use_container_width=True)
 
 def display_visualizations(df, visualization_options):
     st.title("Visualizations")
@@ -171,13 +169,14 @@ def main():
                 display_visualizations(df, visualization_options)
             else:
                 st.warning("Please select at least one visualization option.")
+
     elif page == 'Text Sentiment':
         text_sentiment()
+
     elif page == 'Predictions':
         if df is not None:
             df = predict_from_dataset(df)
             display_predictions(df)
-            display_predictions_visualization(df)
         else:
             st.warning("Please select at least one dataset.")
 
