@@ -53,6 +53,13 @@ def display_top_usernames(df):
     fig.update_layout(width=800, height=400, xaxis={'categoryorder':'total descending'})
     st.plotly_chart(fig, use_container_width=True)
 
+def display_top_locations(df):
+    top_locations = df['location'].value_counts().head(10)
+    fig = px.bar(top_locations, y=top_locations.index, x=top_locations.values, orientation='h',
+                 labels={'y':'Location', 'x':'Count'})
+    fig.update_layout(width=800, height=400, yaxis={'categoryorder':'total ascending'})
+    st.plotly_chart(fig, use_container_width=True)
+
 def translate_to_english(text):
     try:
         translator = GoogleTranslator(source='auto', target='en')
@@ -118,6 +125,8 @@ def display_visualizations(df, visualization_options):
                     display_sentiment_distribution(df)
                 elif option == "Top Usernames":
                     display_top_usernames(df)
+                elif option == "Top Locations":
+                    display_top_locations(df)
                 st.write("<hr>", unsafe_allow_html=True)  # Separate visualizations with a horizontal line
     else:
         st.warning("Please select at least one visualization option.")
@@ -142,7 +151,7 @@ def main():
 
     if page == 'Visualizations':
         if df is not None:
-            visualization_options = st.multiselect("Choose Visualizations", ["Word Cloud", "Sentiment Distribution", "Top Usernames"])
+            visualization_options = st.multiselect("Choose Visualizations", ["Word Cloud", "Sentiment Distribution", "Top Usernames", "Top Locations"])
             if visualization_options:
                 display_visualizations(df, visualization_options)
             else:
