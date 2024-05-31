@@ -160,17 +160,16 @@ def main():
     dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
     df = pd.concat(dfs) if dfs else None
 
-     if page == 'Visualizations':
+    if page == 'Visualizations':
         if df is not None:
             visualization_options = st.multiselect("Choose Visualizations", ["Word Cloud", "Sentiment Distribution", "Top Usernames", "Top Locations"])
-            if visualization_options:
-                display_visualizations(df, visualization_options)
-            else:
-                st.warning("Please select at least one visualization option.")
+        if visualization_options:
+            display_visualizations(df, visualization_options)
+        else:
+            st.warning("Please select at least one visualization option.")
 
     elif page == 'Text Sentiment':
         text_sentiment()
 
 if __name__ == "__main__":
     main()
-
