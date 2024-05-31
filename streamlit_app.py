@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from deep_translator import GoogleTranslator
+from deep_translator import GoogleTranslator, exceptions
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 nltk.download('vader_lexicon', quiet=True)
@@ -65,7 +65,7 @@ def translate_to_english(text):
         translator = GoogleTranslator(source='auto', target='en')
         translated_text = translator.translate(text)
         return translated_text
-    except Exception:
+    except exceptions.TranslationNotFound:
         return "Translation service unavailable."
 
 def sentiment_analysis(text):
@@ -108,19 +108,6 @@ def text_sentiment():
                      f"**Score:** {result['score']:.2f}", 
                      unsafe_allow_html=True)
 
-def predict_from_dataset(df):
-    # Melakukan prediksi di sini
-    # Misalnya, kita hanya akan menggunakan kolom 'Tweet' untuk prediksi
-    predictions = df['Tweet'].apply(lambda x: sentiment_analysis(x))
-    df['predicted_sentiment'] = predictions.apply(lambda x: x['label'])
-    return df
-
-def display_predictions(df):
-    st.subheader("Predictions")
-    sentiment_counts = df['predicted_sentiment'].value_counts()
-    fig = px.pie(sentiment_counts, values=sentiment_counts.values, names=sentiment_counts.index, title='Predicted Sentiment Distribution')
-    st.plotly_chart(fig, use_container_width=True)
-
 def display_visualizations(df, visualization_options):
     st.title("Visualizations")
     num_options = len(visualization_options)
@@ -157,7 +144,7 @@ def main():
 
     selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
 
-    page = st.radio("Navigate", ["Visualizations", "Text Sentiment", "Predictions"])
+    page = st.radio("Navigate", ["Visualizations", "Text Sentiment"])
 
     dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
     df = pd.concat(dfs) if dfs else None
@@ -172,13 +159,6 @@ def main():
 
     elif page == 'Text Sentiment':
         text_sentiment()
-
-    elif page == 'Predictions':
-        if df is not None:
-            df = predict_from_dataset(df)
-            display_predictions(df)
-        else:
-            st.warning("Please select at least one dataset.")
 
 if __name__ == "__main__":
     main()
