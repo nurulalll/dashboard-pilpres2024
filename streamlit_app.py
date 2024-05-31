@@ -94,7 +94,7 @@ def sentiment_analysis(text):
 def predict_from_dataset(df):
     # Melakukan prediksi sentimen pada dataset
     predictions = df['Tweet'].apply(lambda x: sentiment_analysis(x))
-    df['predicted_sentiment'] = predictions.apply(lambda x: x['label'])
+    df['predicted_sentiment'] = predictions.apply(lambda x: x['sentimen'])
     return df
 
 def display_predictions(df):
