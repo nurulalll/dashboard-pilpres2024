@@ -108,17 +108,6 @@ def text_sentiment():
                      f"**Score:** {result['score']:.2f}", 
                      unsafe_allow_html=True)
 
-def predict_from_dataset(df):
-    # Lakukan prediksi di sini
-    # Misalnya, kita hanya akan menggunakan kolom 'Tweet' untuk prediksi
-    # Anda harus mengganti bagian ini dengan model dan metode prediksi yang sesuai
-    predictions = df['Tweet'].apply(lambda x: sentiment_analysis(x))
-    return predictions
-
-def display_predictions(predictions):
-    st.subheader("Predictions")
-    st.write(predictions)
-
 def display_visualizations(df, visualization_options):
     st.title("Visualizations")
     num_options = len(visualization_options)
@@ -155,7 +144,7 @@ def main():
 
     selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
 
-    page = st.radio("Navigate", ["Visualizations", "Text Sentiment", "Predictions"])
+    page = st.radio("Navigate", ["Visualizations", "Text Sentiment"])
 
     dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
     df = pd.concat(dfs) if dfs else None
@@ -163,10 +152,10 @@ def main():
     if page == 'Visualizations':
         if df is not None:
             visualization_options = st.multiselect("Choose Visualizations", ["Word Cloud", "Sentiment Distribution", "Top Usernames", "Top Locations"])
-        if visualization_options:
-            display_visualizations(df, visualization_options)
-        else:
-            st.warning("Please select at least one visualization option.")
+            if visualization_options:
+                display_visualizations(df, visualization_options)
+            else:
+                st.warning("Please select at least one visualization option.")
 
     elif page == 'Text Sentiment':
         text_sentiment()
