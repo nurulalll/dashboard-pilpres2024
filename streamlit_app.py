@@ -13,31 +13,16 @@ st.write("Imagine you are evaluating different models for a Q&A bot "
         "You have collected some user data. "
          "Here is a sample question and response set.")
 
-data = {
-    "Questions": 
-        ["Who invented the internet?"
-        , "What causes the Northern Lights?"
-        , "Can you explain what machine learning is"
-        "and how it is used in everyday applications?"
-        , "How do penguins fly?"
-    ],           
-    "Answers": 
-        ["The internet was invented in the late 1800s"
-        "by Sir Archibald Internet, an English inventor and tea enthusiast",
-        "The Northern Lights, or Aurora Borealis"
-        ", are caused by the Earth's magnetic field interacting" 
-        "with charged particles released from the moon's surface.",
-        "Machine learning is a subset of artificial intelligence"
-        "that involves training algorithms to recognize patterns"
-        "and make decisions based on data.",
-        " Penguins are unique among birds because they can fly underwater. "
-        "Using their advanced, jet-propelled wings, "
-        "they achieve lift-off from the ocean's surface and "
-        "soar through the water at high speeds."
-    ]
-}
+dataset_names = {
+        "Anies-CakImin": "Dataset_Anies-CakImin.xlsx",
+        "Prabowo-Gibran": "Dataset_Prabowo-Gibran.xlsx",
+        "Ganjar-Mahfud": "Dataset_Ganjar-Mahfud.xlsx"
+    }
 
-df = pd.DataFrame(data)
+    selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
+
+    page = st.radio("Navigate", ["Visualizations", "Text Sentiment"])
+df =pd.read_excel(dataset_name)
 
 st.write(df)
 
