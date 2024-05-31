@@ -3,5 +3,4 @@ plotly
 wordcloud
 transformers
 openpyxl
-deep-translator 
-nltk.sentiment.vader
+
