@@ -29,7 +29,7 @@ def header():
         unsafe_allow_html=True
     )
 
-    st.markdown('<div class="center"><h1>Prediksi Pemilihan Presiden RI tahun 2024-2029</h1></div>', unsafe_allow_html=True)
+    st.markdown('<div class="center"><h1>Sentimen Analisis Pemilihan Presiden RI tahun 2024-2029</h1></div>', unsafe_allow_html=True)
     st.image('https://img.okezone.com/content/2018/02/19/337/1861446/sejarah-pemilu-dari-masa-ke-masa-cyx7Flt69A.jpg', width=400)
 
 def display_wordcloud(df):
@@ -109,7 +109,7 @@ def text_sentiment():
                      unsafe_allow_html=True)
 
 def display_visualizations(df, visualization_options):
-    st.title("Visualizations")
+    st.title("")
     num_options = len(visualization_options)
 
     if num_options > 0:
@@ -132,7 +132,7 @@ def display_visualizations(df, visualization_options):
         st.warning("Please select at least one visualization option.")
 
 def main():
-    st.set_page_config(page_title='Sentiment Analysis Dashboard')
+    st.set_page_config(page_title='Sentiment Analysis')
 
     header()
 
@@ -144,7 +144,7 @@ def main():
 
     selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
 
-    page = st.radio("Navigate", ["Visualizations", "Text Sentiment"])
+    page = st.radio("Menu", ["Visualizations", "Text Sentiment"])
 
     dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
     df = pd.concat(dfs) if dfs else None
