@@ -3,7 +3,6 @@ import pandas as pd
 import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from transformers import pipeline
 from deep_translator import GoogleTranslator, exceptions
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
@@ -104,12 +103,14 @@ def text_sentiment():
 
 def display_visualizations(df, visualization_options):
     st.title("Visualizations")
-    if len(visualization_options) > 1:  # Jika lebih dari satu opsi dipilih
-        num_cols = 2
+    num_options = len(visualization_options)
+
+    if num_options > 0:
+        num_cols = min(num_options, 2)  # Display max 2 visualizations side-by-side
         cols = st.columns(num_cols)
-        
+
         for i, option in enumerate(visualization_options):
-            with cols[i % num_cols]:  # Menggunakan modulus untuk mengatur opsi ke kolom yang benar
+            with cols[i % num_cols]:  # Distribute options across columns
                 st.subheader(option)
                 if option == "Word Cloud":
                     display_wordcloud(df)
@@ -117,17 +118,9 @@ def display_visualizations(df, visualization_options):
                     display_sentiment_distribution(df)
                 elif option == "Top Usernames":
                     display_top_usernames(df)
-                if i < len(visualization_options) - 1:
-                    st.write("<hr>", unsafe_allow_html=True)  # Memisahkan visualisasi dengan garis horizontal
-    else:  # Jika hanya satu opsi yang dipilih
-        option = visualization_options[0]
-        st.subheader(option)
-        if option == "Word Cloud":
-            display_wordcloud(df)
-        elif option == "Sentiment Distribution":
-            display_sentiment_distribution(df)
-        elif option == "Top Usernames":
-            display_top_usernames(df)
+                st.write("<hr>", unsafe_allow_html=True)  # Separate visualizations with a horizontal line
+    else:
+        st.warning("Please select at least one visualization option.")
 
 def main():
     st.set_page_config(page_title='Sentiment Analysis Dashboard')
