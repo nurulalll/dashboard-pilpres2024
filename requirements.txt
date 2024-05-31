@@ -4,3 +4,4 @@ wordcloud
 transformers
 openpyxl
 deep-translator
+nltk
