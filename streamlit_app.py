@@ -54,11 +54,6 @@ def display_top_usernames(df):
     fig.update_layout(width=800, height=400, xaxis={'categoryorder':'total descending'})
     st.plotly_chart(fig, use_container_width=True)
 
-import streamlit as st
-from deep_translator import GoogleTranslator, exceptions
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import nltk
-
 def translate_to_english(text):
     try:
         translator = GoogleTranslator(source='auto', target='en')
@@ -90,7 +85,22 @@ def sentiment_analysis(text):
         label = 'NEUTRAL'
 
     return {'label': label, 'score': compound_score}
+    
+def text_sentiment():
+    st.title('Analisis Text Sentiment')
+    input_text = st.text_area("Masukkan kalimat yang ingin di analisis:")
+    button = st.button("Analisis")
 
+    if button:
+        with st.spinner("Sedang menganalisis..."):
+            result = sentiment_analysis(input_text)
+        if result['label'] == 'ERROR':
+            st.write("Terjadi kesalahan dalam menerjemahkan teks.")
+        else:
+            sentiment_color = "green" if result['label'] == 'POSITIVE' else "red" if result['label'] == 'NEGATIVE' else "blue"
+            st.write(f"**Sentimen:** <span style='color:{sentiment_color}; font-weight:bold;'>{result['label']}</span>", 
+                     f"**Score:** {result['score']:.2f}", 
+                     unsafe_allow_html=True)
 
 def display_visualizations(df, visualization_options):
     st.title("Visualizations")
