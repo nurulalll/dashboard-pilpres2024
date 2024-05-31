@@ -65,8 +65,13 @@ def translate_to_english(text):
         translator = GoogleTranslator(source='auto', target='en')
         translated_text = translator.translate(text)
         return translated_text
-    except exceptions.TranslationNotFound:
+    except deep_translator.exceptions.TooManyRequests:
+        st.error("Terlalu banyak permintaan telah dilakukan. Silakan coba lagi nanti.")
         return "Translation service unavailable."
+    except Exception as e:
+        st.error(f"Translation error: {e}")
+        return "Translation service unavailable."
+
 
 def sentiment_analysis(text):
     # Translate teks ke bahasa Inggris
