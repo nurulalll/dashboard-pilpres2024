@@ -15,7 +15,7 @@ def load_data(dataset):
     elif dataset.name.endswith('.csv'):
         df = pd.read_csv(dataset)
     else:
-        st.error("Unsupported file type. Please upload a .xlsx or .csv file.")
+        st.error("Unsupported file type. Please upload a .xlsx atau .csv file.")
         return None
     return df
 
@@ -39,7 +39,7 @@ def header():
 
 def display_wordcloud(df):
     tweet_text = ' '.join(df['Tweet'].astype(str).tolist())
-    wordcloud = WordCloud(width=800, height=550, background_color ='white').generate(tweet_text)
+    wordcloud = WordCloud(width=800, height=550, background_color='white').generate(tweet_text)
     plt.figure(figsize=(12, 15))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
@@ -104,9 +104,9 @@ def sentiment_analysis(text):
 def text_sentiment():
     st.title('Analisis Text Sentiment')
     
-    option = st.radio("Pilih metode input:", ["Masukkan teks sendiri", "Unggah file"])
+    option = st.radio("Pilih metode input:", ["Text Sentiment", "Upload file"])
 
-    if option == "Text Sentimen":
+    if option == "Text Sentiment":
         input_text = st.text_area("Masukkan kalimat yang ingin dianalisis:")
         button = st.button("Analisis")
         if button:
@@ -174,7 +174,7 @@ def main():
 
     selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
 
-    dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
+    dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets if dataset in dataset_names]
     df = pd.concat(dfs) if dfs else None
 
     page = st.radio("Menu", ["Visualizations", "Text Sentiment"])
@@ -187,7 +187,7 @@ def main():
             else:
                 st.warning("Please select at least one visualization option.")
         else:
-            st.warning("Please select a dataset or upload your own.")
+            st.warning("Please select a dataset.")
 
     elif page == 'Text Sentiment':
         text_sentiment()
