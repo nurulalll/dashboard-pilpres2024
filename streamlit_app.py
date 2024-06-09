@@ -174,11 +174,8 @@ def main():
 
     selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
 
-    if uploaded_file:
-        df = load_data(uploaded_file)
-    else:
-        dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
-        df = pd.concat(dfs) if dfs else None
+    dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
+    df = pd.concat(dfs) if dfs else None
 
     page = st.radio("Menu", ["Visualizations", "Text Sentiment"])
 
