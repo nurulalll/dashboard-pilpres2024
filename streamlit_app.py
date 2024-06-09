@@ -103,19 +103,40 @@ def sentiment_analysis(text):
 
 def text_sentiment():
     st.title('Analisis Text Sentiment')
-    input_text = st.text_area("Masukkan kalimat yang ingin di analisis:")
-    button = st.button("Analisis")
+    
+    option = st.radio("Pilih metode input:", ["Masukkan teks sendiri", "Unggah file"])
 
-    if button:
-        with st.spinner("Sedang menganalisis..."):
-            result = sentiment_analysis(input_text)
-        if result['label'] == 'ERROR':
-            st.write("Terjadi kesalahan dalam menerjemahkan teks.")
-        else:
-            sentiment_color = "green" if result['label'] == 'POSITIVE' else "red" if result['label'] == 'NEGATIVE' else "blue"
-            st.write(f"**Sentimen:** <span style='color:{sentiment_color}; font-weight:bold;'>{result['label']}</span>", 
-                     f"**Score:** {result['score']:.2f}", 
-                     unsafe_allow_html=True)
+    if option == "Masukkan teks sendiri":
+        input_text = st.text_area("Masukkan kalimat yang ingin dianalisis:")
+        button = st.button("Analisis")
+        if button:
+            with st.spinner("Sedang menganalisis..."):
+                result = sentiment_analysis(input_text)
+            if result['label'] == 'ERROR':
+                st.write("Terjadi kesalahan dalam menerjemahkan teks.")
+            else:
+                sentiment_color = "green" if result['label'] == 'POSITIVE' else "red" if result['label'] == 'NEGATIVE' else "blue"
+                st.write(f"**Sentimen:** <span style='color:{sentiment_color}; font-weight:bold;'>{result['label']}</span>", 
+                         f"**Score:** {result['score']:.2f}", 
+                         unsafe_allow_html=True)
+    elif option == "Unggah file":
+        uploaded_file = st.file_uploader("Upload file .xlsx atau .csv", type=["xlsx", "csv"])
+        if uploaded_file is not None:
+            df = load_data(uploaded_file)
+            if df is not None:
+                if 'Tweet' in df.columns:
+                    st.write("Data berhasil diunggah. Berikut beberapa baris pertama data:")
+                    st.write(df.head())
+
+                    button = st.button("Analisis Sentimen")
+                    if button:
+                        with st.spinner("Sedang menganalisis..."):
+                            df['sentimen'] = df['Tweet'].apply(lambda x: sentiment_analysis(x)['label'])
+                            st.write("Analisis Sentimen selesai. Berikut hasilnya:")
+                            st.write(df.head())
+                            display_sentiment_distribution(df)
+                else:
+                    st.error("File tidak memiliki kolom 'Tweet'.")
 
 def display_visualizations(df, visualization_options):
     st.title("")
