@@ -106,7 +106,7 @@ def text_sentiment():
     
     option = st.radio("Pilih metode input:", ["Masukkan teks sendiri", "Unggah file"])
 
-    if option == "Masukkan teks sendiri":
+    if option == "Text Sentimen":
         input_text = st.text_area("Masukkan kalimat yang ingin dianalisis:")
         button = st.button("Analisis")
         if button:
@@ -119,7 +119,7 @@ def text_sentiment():
                 st.write(f"**Sentimen:** <span style='color:{sentiment_color}; font-weight:bold;'>{result['label']}</span>", 
                          f"**Score:** {result['score']:.2f}", 
                          unsafe_allow_html=True)
-    elif option == "Unggah file":
+    elif option == "Upload file":
         uploaded_file = st.file_uploader("Upload file .xlsx atau .csv", type=["xlsx", "csv"])
         if uploaded_file is not None:
             df = load_data(uploaded_file)
@@ -173,7 +173,6 @@ def main():
     }
 
     selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
-    uploaded_file = st.file_uploader("Upload your dataset", type=["xlsx", "csv"])
 
     if uploaded_file:
         df = load_data(uploaded_file)
