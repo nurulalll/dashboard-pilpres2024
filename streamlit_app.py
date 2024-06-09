@@ -9,10 +9,14 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 nltk.download('vader_lexicon', quiet=True)
 
-
-def load_data(dataset_name):
-    # Load dataset
-    df = pd.read_excel(dataset_name)
+def load_data(dataset):
+    if dataset.name.endswith('.xlsx'):
+        df = pd.read_excel(dataset)
+    elif dataset.name.endswith('.csv'):
+        df = pd.read_csv(dataset)
+    else:
+        st.error("Unsupported file type. Please upload a .xlsx or .csv file.")
+        return None
     return df
 
 def header():
@@ -66,13 +70,12 @@ def translate_to_english(text):
         translator = GoogleTranslator(source='auto', target='en')
         translated_text = translator.translate(text)
         return translated_text
-    except deep_translator.exceptions.TooManyRequests:
+    except TooManyRequests:
         st.error("Terlalu banyak permintaan telah dilakukan. Silakan coba lagi nanti.")
         return "Translation service unavailable."
     except Exception as e:
         st.error(f"Translation error: {e}")
         return "Translation service unavailable."
-
 
 def sentiment_analysis(text):
     # Translate teks ke bahasa Inggris
@@ -97,7 +100,7 @@ def sentiment_analysis(text):
         label = 'NEUTRAL'
 
     return {'label': label, 'score': compound_score}
-    
+
 def text_sentiment():
     st.title('Analisis Text Sentiment')
     input_text = st.text_area("Masukkan kalimat yang ingin di analisis:")
@@ -149,11 +152,15 @@ def main():
     }
 
     selected_datasets = st.multiselect("Select Datasets", list(dataset_names.keys()))
+    uploaded_file = st.file_uploader("Upload your dataset", type=["xlsx", "csv"])
+
+    if uploaded_file:
+        df = load_data(uploaded_file)
+    else:
+        dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
+        df = pd.concat(dfs) if dfs else None
 
     page = st.radio("Menu", ["Visualizations", "Text Sentiment"])
-
-    dfs = [load_data(dataset_names[dataset]) for dataset in selected_datasets]
-    df = pd.concat(dfs) if dfs else None
 
     if page == 'Visualizations':
         if df is not None:
@@ -162,6 +169,8 @@ def main():
                 display_visualizations(df, visualization_options)
             else:
                 st.warning("Please select at least one visualization option.")
+        else:
+            st.warning("Please select a dataset or upload your own.")
 
     elif page == 'Text Sentiment':
         text_sentiment()
